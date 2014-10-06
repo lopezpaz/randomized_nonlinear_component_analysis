@@ -70,3 +70,26 @@ rpca_eval <- function(rpca,x) {
   predict(rpca$pca,rpca$augx(x))
 }
 
+dataset   <- "xrmb"
+algorithm <- "nystrom"
+
+if(dataset == "xrmb") {
+  load('xrmb.data')
+  x_tr <- x_tr[1:30000,]
+  y_tr <- y_tr[1:30000,]
+  top    <- 112
+} else {
+  load('mnist.data')
+  top  <- 50
+}
+
+for(k in c(1000,2000,3000,4000,5000,6000)){
+  t1     <- Sys.time()
+  cca    <- rcca_fit(x_tr,y_tr,k,k,algorithm,top)
+  t2     <- Sys.time()
+  print(t2-t1)
+  cca_te <- rcca_eval(cca,x_te,y_te)
+  r_te   <- sum(sapply(1:top,function(i) abs(cor(cca_te$x[,i],cca_te$y[,i]))))
+  print(sprintf("%s-%i on %s has %.2f/%.2f in %.2f",algorithm,k,dataset,cca$cor,r_te,t2-t1))
+}
+
