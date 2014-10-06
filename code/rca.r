@@ -74,6 +74,7 @@ dataset   <- "xrmb"
 algorithm <- "nystrom"
 
 if(dataset == "xrmb") {
+  system('cat xrmb* > xrmb.data')
   load('xrmb.data')
   x_tr <- x_tr[1:30000,]
   y_tr <- y_tr[1:30000,]
